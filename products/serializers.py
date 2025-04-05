@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Characteristic, Product
+from .models import Characteristic, Product, ProductImage
 
 class CharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,13 +8,21 @@ class CharacteristicSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     characteristic = CharacteristicSerializer(many=True)
-    image_url = serializers.SerializerMethodField()
-
-    def get_image_url(self, obj):
-        if obj.image:
-            return self.context['request'].build_absolute_uri(obj.image.url)
-        return None
+    images = serializers.ListField(child=serializers.ImageField(), write_only=True)
 
     class Meta:
         model = Product
-        fields = ['name', 'price', 'percent', 'characteristic', 'image_url']
+        fields = ['name', 'price', 'percent', 'characteristic', 'images']
+
+    def create(self, validated_data):
+        images = validated_data.pop("images")
+        product = Product.objects.create(name=validated_data["name"])
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
+        return product
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["image"]
+
