@@ -13,6 +13,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
+    description = models.TextField(max_length=2000)
+    small_description = models.TextField(max_length=1000)
     price = models.FloatField()
     percent = models.IntegerField(default=0)
     characteristic = models.ManyToManyField(Characteristic)
