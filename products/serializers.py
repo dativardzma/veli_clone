@@ -14,7 +14,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     characteristic = CharacteristicSerializer(many=True)
     image_url = serializers.SerializerMethodField()
-    category = CategorySerializer(many=True)
+    category = CategorySerializer()
 
     def get_image_url(self, obj):
         if obj.image:
