@@ -3,3 +3,4 @@ from .models import Characteristic, Product
 
 admin.site.register(Characteristic)
 admin.site.register(Product)
+admin.site.register(Category)
