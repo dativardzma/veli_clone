@@ -20,3 +20,4 @@ class Product(models.Model):
     characteristic = models.ManyToManyField(Characteristic)
     image = models.ImageField(upload_to='product_images/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
