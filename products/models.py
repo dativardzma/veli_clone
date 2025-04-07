@@ -18,7 +18,6 @@ class Product(models.Model):
     percent = models.IntegerField(default=0)
     discount_price = models.FloatField(editable=False, null=True, blank=True)
     characteristic = models.ManyToManyField(Characteristic)
-    image = models.ImageField(upload_to='product_images/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     warranty_period = models.IntegerField(default=1, editable=False)
@@ -35,3 +34,8 @@ class Product(models.Model):
             self.warranty_period = 1
 
         super().save(*args, **kwargs)
+
+# ✅ New Model for Product Images
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to='product_images/')

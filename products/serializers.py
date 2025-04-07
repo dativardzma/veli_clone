@@ -1,5 +1,17 @@
 from rest_framework import serializers
-from .models import Characteristic, Product, Category
+from .models import Characteristic, Product, Category, ProductImage
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return self.context['request'].build_absolute_uri(obj.image.url)
+        return None
 
 class CharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,14 +25,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     characteristic = CharacteristicSerializer(many=True)
-    image_url = serializers.SerializerMethodField()
+    images = ProductImageSerializer(many=True, read_only=True)
     category = CategorySerializer()
-
-    def get_image_url(self, obj):
-        if obj.image:
-            return self.context['request'].build_absolute_uri(obj.image.url)
-        return None
 
     class Meta:
         model = Product
-        fields = ['name', 'price', 'percent', 'discount_price', 'characteristic', 'image_url', 'category', 'description', 'small_description', 'warranty_period' ]
+        fields = ['name', 'price', 'percent', 'discount_price', 'characteristic', 'images', 'category', 'description', 'small_description', 'warranty_period']
