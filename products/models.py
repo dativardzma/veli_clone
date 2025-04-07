@@ -17,7 +17,15 @@ class Product(models.Model):
     small_description = models.TextField(max_length=1000)
     price = models.FloatField()
     percent = models.IntegerField(default=0)
+    discount_price = models.FloatField()
     characteristic = models.ManyToManyField(Characteristic)
     image = models.ImageField(upload_to='product_images/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True) 
+
+    def save(self, *args,**kvargs):
+        if self.percent > 0:
+            self.discount_price = self.price-self.price*(self.percent/100)
+        else:
+            self.discount_price = self.price
+        super().save(*args,**kvargs)
