@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Characteristic, Category
+from .models import Product, ProductImage, Category
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -10,5 +10,5 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'discount_price', 'category', 'date_added']
     inlines = [ProductImageInline]
 
-admin.site.register(Characteristic)
+# admin.site.register(Characteristic)
 admin.site.register(Category)

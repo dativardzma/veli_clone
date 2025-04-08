@@ -1,11 +1,11 @@
 from django.db import models
 
 # Create your models here.
-class Characteristic(models.Model):
-    brend = models.CharField(max_length=30)
-    model = models.CharField(max_length=30)
-    power = models.CharField(max_length=100)
-    cable_length = models.FloatField()
+# class Characteristic(models.Model):
+#     brend = models.CharField(max_length=30)
+#     model = models.CharField(max_length=30)
+#     power = models.CharField(max_length=100)
+#     cable_length = models.FloatField()
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -17,7 +17,7 @@ class Product(models.Model):
     price = models.FloatField()
     percent = models.IntegerField(default=0)
     discount_price = models.FloatField(editable=False, null=True, blank=True)
-    characteristic = models.ManyToManyField(Characteristic)
+    characteristic = models.JSONField(default=dict)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     warranty_period = models.IntegerField(default=1, editable=False)
