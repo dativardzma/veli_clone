@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductView, ProductFilter
+from .views import ProductView, ProductFilter, FavoriteViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
@@ -10,6 +10,7 @@ from drf_yasg import openapi
 router = DefaultRouter()
 router.register(r"products", ProductView, basename='products')
 router.register(r"category", ProductFilter, basename='products_filter')
+router.register(r"favorite", FavoriteViewSet, basename='favorites')
 
 schema_view = get_schema_view(
     openapi.Info(
