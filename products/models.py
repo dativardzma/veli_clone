@@ -59,3 +59,6 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"Favorite: {self.user.username} - {self.product.name}"
+
+class Basket(models.Model):
+    ...

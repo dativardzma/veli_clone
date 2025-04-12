@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status, generics
-from .models import Product, Favorite, CustomUser
+from .models import Product, Favorite, CustomUser, Category
 from .serializers import ProductSerializer, FavoriteSerializer, UserSerializer, CategorySerializer
 from rest_framework.generics import ListCreateAPIView
 from drf_yasg.utils import swagger_auto_schema
@@ -56,7 +56,9 @@ class ProductFilter(ModelViewSet):
 
         return queryset
 
-
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 # class FavoriteViewSet(ModelViewSet):
 #     queryset = Favorite.objects.all()
 #     serializer_class = FavoriteSerializer
