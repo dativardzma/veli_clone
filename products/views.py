@@ -18,6 +18,7 @@ class ProductView(ModelViewSet):
     lookup_field = 'id'
 
 class ProductFilter(ModelViewSet):
+    queryset = Product.objects.all()
     serializer_class = CategorySerializer
 
     @swagger_auto_schema(
