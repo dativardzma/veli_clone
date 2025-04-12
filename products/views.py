@@ -59,6 +59,16 @@ class ProductFilter(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        
+        # Clean up the response structure
+        categories = [{'category': item} for item in serializer.data]
+        
+        return Response(categories)
+        
 # class FavoriteViewSet(ModelViewSet):
 #     queryset = Favorite.objects.all()
 #     serializer_class = FavoriteSerializer
