@@ -37,7 +37,7 @@ class ProductFilter(ModelViewSet):
         category = self.request.query_params.get('category', None)
         filt = self.request.query_params.get('filter', None)
 
-        queryset = category.objects.all() 
+        queryset = Product.objects.all() 
 
         if category:
             if category.isdigit():
