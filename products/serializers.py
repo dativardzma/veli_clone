@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, ProductImage, Favorite
+from .models import Product, Category, ProductImage, Favorite, CustomUser
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -13,18 +13,12 @@ class ProductImageSerializer(serializers.ModelSerializer):
             return self.context['request'].build_absolute_uri(obj.image.url)
         return None
 
-# class CharacteristicSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Characteristic
-#         fields = '__all__'
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['name']
 
 class ProductSerializer(serializers.ModelSerializer):
-    # characteristic = CharacteristicSerializer(many=True)
     images = ProductImageSerializer(many=True, read_only=True)
     category = CategorySerializer()
 
@@ -32,10 +26,13 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'name', 'price', 'percent', 'discount_price', 'characteristic', 'images', 'category', 'description', 'small_description', 'warranty_period']
 
-class FavoriteSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
-    product_details = ProductSerializer(source='product', read_only=True)
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'phone_number', 'password']
 
+class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
-        fields = ['session_id', 'product', 'product_details']
+        fields = ['id', 'user', 'product']
+        read_only_fields = ['user']

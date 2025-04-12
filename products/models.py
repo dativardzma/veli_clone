@@ -1,11 +1,7 @@
 from django.db import models
-
-# Create your models here.
-# class Characteristic(models.Model):
-#     brend = models.CharField(max_length=30)
-#     model = models.CharField(max_length=30)
-#     power = models.CharField(max_length=100)
-#     cable_length = models.FloatField()
+from django.contrib.auth.models import AbstractUser
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -39,9 +35,27 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to='product_images/')
 
+class CustomUser(AbstractUser):
+    phone_number = models.IntegerField(unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.email
+
+    def save(self, *args, **kwargs):
+        if self.pk is None or not self.password.startswith('pbkdf2_sha256$'):
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
+
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {'refresh': str(refresh), 'acsses': str(refresh.access_token)}
+
 class Favorite(models.Model):
-    session_id = models.CharField(max_length=255)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('session_id', 'product')
+    # class Meta:
+    #     unique_together = ('user', 'product')
+
+    def __str__(self):
+        return f"Favorite: {self.user.username} - {self.product.name}"

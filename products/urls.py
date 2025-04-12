@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductView, ProductFilter, FavoriteViewSet
+from .views import ProductView, ProductFilter, FavoriteViewSet, UserViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
@@ -11,6 +11,7 @@ router = DefaultRouter()
 router.register(r"products", ProductView, basename='products')
 router.register(r"category", ProductFilter, basename='products_filter')
 router.register(r"favorite", FavoriteViewSet, basename='favorites')
+router.register(r"users", UserViewSet, basename='users')
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,4 +31,6 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    # path('favorites/', FavoriteListCreateView.as_view(), name='favorite-list-create'),
+    # path('favorites/<int:product_id>/', FavoriteDeleteView.as_view(), name='favorite-delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
