@@ -17,6 +17,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     warranty_period = models.IntegerField(default=1, editable=False)
+    monthly_payment = models.CharField(max_length = 50,editable=False)
 
     def save(self, *args, **kwargs):
         if self.percent > 0:
@@ -28,6 +29,8 @@ class Product(models.Model):
             self.warranty_period = 2
         else:
             self.warranty_period = 1
+
+        self.monthly_payment = self.price / 12
 
         super().save(*args, **kwargs)
 
