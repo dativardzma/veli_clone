@@ -9,7 +9,7 @@ from drf_yasg import openapi
 
 router = DefaultRouter()
 router.register(r"products", ProductView, basename='products')
-# router.register(r"filter", ProductFilter, basename='products_filter')
+router.register(r"filter", ProductFilter, basename='products_filter')
 router.register(r"favorite", FavoriteViewSet, basename='favorites')
 router.register(r"users", UserViewSet, basename='users')
 router.register(r"category", CategoryViewSet, basename='categorys')
