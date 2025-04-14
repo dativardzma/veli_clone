@@ -43,6 +43,7 @@ class ProductFilter(ModelViewSet):
         if category:
             if category.isdigit():
                 queryset = queryset.filter(category__id=int(category))
+            else:
                 queryset = queryset.filter(category__name__iexact=category)
         print(queryset)
 
