@@ -10,6 +10,7 @@ from drf_yasg import openapi
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.forms.models import model_to_dict
 
 
 class ProductView(ModelViewSet):
@@ -19,7 +20,7 @@ class ProductView(ModelViewSet):
 
 class ProductFilter(ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = ProductSerializer
 
     @swagger_auto_schema(
         operation_description="Retrieve a list of products",
@@ -42,8 +43,8 @@ class ProductFilter(ModelViewSet):
         if category:
             if category.isdigit():
                 queryset = queryset.filter(category__id=int(category))
-            else:
-                queryset = queryset.filter(category__name__iexact=category) 
+                queryset = queryset.filter(category__name__iexact=category)
+        print(queryset)
 
         if filt == "date":
             queryset = queryset.order_by('-date_added')
