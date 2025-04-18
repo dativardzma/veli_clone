@@ -67,4 +67,5 @@ class Favorite(models.Model):
         return f"Favorite: {self.user.username} - {self.product.name}"
 
 class Basket(models.Model):
-    ...
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    products = models.ManyToManyField(Product, blank=True)

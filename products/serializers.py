@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, ProductImage, Favorite, CustomUser
+from .models import Product, Category, ProductImage, Favorite, CustomUser, Basket
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -36,3 +36,15 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ['id', 'user', 'product']
         read_only_fields = ['user']
+
+class BasketSerializer(serializers.ModelSerializer):
+    products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
+    class Meta:
+        model = Basket
+        fields = ['products']
+        read_only_fields = ['user']
+
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'password']
