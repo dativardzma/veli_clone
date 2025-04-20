@@ -5,6 +5,7 @@ from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='baner_image/')
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
