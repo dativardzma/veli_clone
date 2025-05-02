@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status, generics
 from .models import Product, Favorite, CustomUser, Category, Basket
-from .serializers import ProductSerializer, FavoriteSerializer, UserSerializer, CategorySerializer, BasketSerializer, LoginSerializer
+from .serializers import ProductSerializer, FavoriteSerializer, UserSerializer, CategorySerializer, BasketSerializer, LoginSerializer, MyTokenObtainPairSerializer
 from rest_framework.generics import ListCreateAPIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from django.forms.models import model_to_dict
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 
@@ -67,20 +68,20 @@ class CategoryViewSet(ModelViewSet):
 class UserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        refresh = user.tokens()
-        result = {
-            "username": serializer.data['username'],
-            "email": serializer.data['email'],
-            "phone_number": serializer.data['phone_number'],
-            "password": serializer.data['password'],
-            "refresh": refresh['refresh'], 
-            "access": refresh['acsses']
-        }
-        return Response(result, status=status.HTTP_201_CREATED)
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     user = serializer.save()
+    #     refresh = user.tokens()
+    #     result = {
+    #         "username": serializer.data['username'],
+    #         "email": serializer.data['email'],
+    #         "phone_number": serializer.data['phone_number'],
+    #         "password": serializer.validated_data['password'],
+    #         "refresh": refresh['refresh'], 
+    #         "access": refresh['acsses']
+    #     }
+    #     return Response(result, status=status.HTTP_201_CREATED)
 
 class FavoriteViewSet(ModelViewSet):
     queryset = Favorite.objects.all()
@@ -189,8 +190,11 @@ class LoginViewSet(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+        print(username)
+        print(password)
 
         user = authenticate(request, username=username, password=password)
+        print(user)
         if user is None:
             return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -202,3 +206,15 @@ class LoginViewSet(APIView):
             'acsses': refresh['acsses']
         }
         )
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+class UserDetailsView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+
+    def get(self, request):
+        user = request.user  # Get the user from the token (authenticated user)
+        # serializer = UserSerializer(user, context={'include_password': False})
+        serializer = UserSerializer(user)  # Serialize user data
+        return Response(serializer.data, status=status.HTTP_200_OK) 
