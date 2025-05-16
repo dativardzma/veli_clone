@@ -106,11 +106,22 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 class BasketSerializer(serializers.ModelSerializer):
     products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
+
     class Meta:
         model = Basket
         fields = ['products']
         read_only_fields = ['user']
 
+    def create(self, validated_data):
+        user = self.context['request'].user  # Get the authenticated user from the request context
+        products = validated_data.pop('products')  # Extract products
+
+        # Either get existing basket or create a new one for this user
+        basket, _ = Basket.objects.get_or_create(user=user)
+
+        basket.products.set(products)  # Replace with provided products
+        basket.save()
+        return basket
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser

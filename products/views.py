@@ -172,12 +172,11 @@ class BasketViewSet(ModelViewSet):
         responses={201: BasketSerializer}
     )
     def post(self, request):
-        serializer = BasketSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        serializer = BasketSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
+        
 class LoginViewSet(APIView):
     permission_classes = [AllowAny]
 
