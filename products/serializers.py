@@ -113,14 +113,15 @@ class BasketSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
     def create(self, validated_data):
-        user = self.context['request'].user  # Get the authenticated user from the request context
-        products = validated_data.pop('products')  # Extract products
+        user = self.context['request'].user
+        products = validated_data.pop('products')
 
-        # Either get existing basket or create a new one for this user
+        # Get or create the basket
         basket, _ = Basket.objects.get_or_create(user=user)
 
-        basket.products.set(products)  # Replace with provided products
-        basket.save()
+        # Add new products to the basket (instead of replacing)
+        basket.products.add(*products)
+
         return basket
 class LoginSerializer(serializers.ModelSerializer):
     class Meta:

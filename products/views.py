@@ -130,27 +130,27 @@ class BasketViewSet(ModelViewSet):
         for basket in baskets:
             products_data = []
             for product in basket.products.all():
-                product_data = {
-                    "id": product.id,
-                    "name": product.name,
-                    "description": product.description,
-                    "small_description": product.small_description,
-                    "price": product.price,
-                    "percent": product.percent,
-                    "discount_price": product.discount_price,
-                    "characteristic": product.characteristic,
-                    "category": {
-                        "id": product.category.id,
-                        "name": product.category.name
-                    },
-                    "date_added": product.date_added,
-                    "warranty_period": product.warranty_period,
-                    "images": [
-                        request.build_absolute_uri(img.image.url)
-                        for img in product.images.all()
-                    ]
-                }
-                products_data.append(product_data)
+                # product_data = {
+                #     "id": product.id,
+                #     "name": product.name,
+                #     "description": product.description,
+                #     "small_description": product.small_description,
+                #     "price": product.price,
+                #     "percent": product.percent,
+                #     "discount_price": product.discount_price,
+                #     "characteristic": product.characteristic,
+                #     "category": {
+                #         "id": product.category.id,
+                #         "name": product.category.name
+                #     },
+                #     "date_added": product.date_added,
+                #     "warranty_period": product.warranty_period,
+                #     "images": [
+                #         request.build_absolute_uri(img.image.url)
+                #         for img in product.images.all()
+                #     ]
+                # 
+                products_data.append(product.id)
 
             data.append({
                 "id": basket.id,
